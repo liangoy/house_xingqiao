@@ -45,4 +45,7 @@ def average_price(**kwargs):
     dis = [fts.distance(location, i) for i in loc]
     dis = [i for i in dis if i < radius]
     #todo
-    return str(len(dis))
+    if len(dis)>=no_less_than:
+        return str(len(dis))
+    else:
+        return '房屋数量少于no_less_than',401
