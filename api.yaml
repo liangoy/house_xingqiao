@@ -1,0 +1,86 @@
+swagger: '2.0'
+info:
+  title: House Price Predictor API
+  version: '0.1'
+  description: House Price Predictor API
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /house/localtion:
+    get:
+      tags:
+        - house
+      operationId: handlers.house.location
+      summary: '输入房屋地址,得到房屋坐标'
+      parameters:
+        - name: address
+          description: 房屋的地址
+          in: query
+          type: string
+      responses:
+        '200':
+          description: 返回房屋坐标
+          schema:
+            type: object
+            properties:
+              address:
+                type: string
+                description: 房屋的地
+              location:
+                type: string
+                description: '房屋的坐标,例如 ''113.926795,22.521971'''
+  /house/price_predicted:
+    get:
+      summary: '返回房屋的预测价格,以及各个因素的影响'
+      tags:
+        - house
+      operationId: handlers.house.price_predicted
+      parameters:
+        - name: address
+          description: 房屋地址
+          in: query
+          type: string
+        - name: face
+          description: '房屋的朝向,输入数字,(北:0,东北:1,东:2,东南:3,南:4,西南:5,西:6,西北:7)'
+          type: string
+          pattern: '^[01234567]$'
+          in: query
+        - name: area
+          description: '房屋的面积,单位是平方米,例如:90'
+          type: string
+          in: query
+          pattern: '^[\d\.]+$'
+        - name: rooms
+          description: 房间数量
+          in: query
+          pattern: '^[0-9]$'
+          type: string
+        - name: living_rooms
+          description: 客厅数量
+          in: query
+          pattern: '^[0-9]$'
+          type: string
+        - name: floor
+          type: string
+          description: 住在第几层
+          in: query
+          pattern: '^[0-9]*$'
+        - name: total_floor
+          type: string
+          in: query
+          description: 总共有几层
+          pattern: '^[0-9]*$'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              price_predicted:
+                type: string
+                description: 预测的价格
+              influence:
+                type: object
+                description: 各个因素对预测价格的影响
