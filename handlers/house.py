@@ -1,7 +1,7 @@
 from services.gaode import gaode_service
 from services.predict import price_predictor
 from utils import fts
-
+import config
 
 def location(**kwargs):
     address = kwargs['address']
@@ -37,4 +37,12 @@ def around_info(**kwargs):
     return info
 
 def average_price(**kwargs):
-    return "0"
+    location=kwargs['location']
+    radius=float(kwargs['radius'])
+    no_less_than=int(kwargs['no_less_than'])
+    location = [float(i) for i in location.split(',')]
+    loc = [[float(i) for i in j.split(',')] for j in config.HOUSE_DF.location]
+    dis = [fts.distance(location, i) for i in loc]
+    dis = [i for i in dis if i < radius]
+    #todo
+    return str(len(dis))

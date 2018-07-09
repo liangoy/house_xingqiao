@@ -168,7 +168,7 @@ paths:
           in: query
           description: 周围多少米范围内
           pattern: '^[\d\.]*$'
-        - name: no_less_then
+        - name: no_less_than
           type: string
           description: '如果周围房子少于这个数量,则返回错误'
           in: query
