@@ -8,7 +8,7 @@ consumes:
 produces:
   - application/json
 paths:
-  /house/localtion:
+  /house/location:
     get:
       tags:
         - house
@@ -51,27 +51,27 @@ paths:
           description: '房屋的面积,单位是平方米,例如:90'
           type: string
           in: query
-          pattern: '^[\d\.]+$'
+          pattern: '[\d\.]+'
         - name: rooms
           description: 房间数量
           in: query
-          pattern: '^[0-9]$'
+          pattern: '[0-9]'
           type: string
         - name: living_rooms
           description: 客厅数量
           in: query
-          pattern: '^[0-9]$'
+          pattern: '[0-9]'
           type: string
         - name: floor
           type: string
           description: 住在第几层
           in: query
-          pattern: '^[0-9]*$'
+          pattern: '[0-9]*'
         - name: total_floor
           type: string
           in: query
           description: 总共有几层
-          pattern: '^[0-9]*$'
+          pattern: '[0-9]*'
       responses:
         '200':
           description: OK
@@ -84,3 +84,45 @@ paths:
               influence:
                 type: object
                 description: 各个因素对预测价格的影响
+  /house/around_info:
+    get:
+      summary: 房屋周围信息
+      tags:
+        - house
+      operationId: handlers.house.around_info
+      parameters:
+        - name: location
+          type: string
+          in: query
+          description: '房屋的坐标,例如 "113.926795,22.521971"'
+          pattern: '^[\d\.]*,[\d\.]*$'
+        - name: radius
+          type: string
+          default: '3000'
+          in: query
+          description: 周围多少米范围内
+          pattern: '^[\d\.]*$'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              banks:
+                type: string
+                description: 银行数量
+              schools:
+                type: string
+                description: 学校数量
+              hospitals:
+                type: string
+                description: 医院数量
+              hotels:
+                type: string
+                description: 宾馆数量
+              bus_stops:
+                type: string
+                description: 公交站数量
+              subway_stations:
+                type: string
+                description: 地铁站数量
