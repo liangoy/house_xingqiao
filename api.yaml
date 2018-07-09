@@ -98,7 +98,7 @@ paths:
           pattern: '^[\d\.]*,[\d\.]*$'
         - name: radius
           type: string
-          default: '3000'
+          default: '1000'
           in: query
           description: 周围多少米范围内
           pattern: '^[\d\.]*$'
@@ -126,3 +126,56 @@ paths:
               subway_stations:
                 type: string
                 description: 地铁站数量
+  /distance:
+    get:
+      tags:
+        - distance
+      summary: 计算两个坐标之间的距离
+      description: '这个接口只是把地球当成一个球体,跟据地球半径6371km,去计算两个坐标之间的距离,没有将地球的扁平度考虑进去'
+      operationId: handlers.house.distance
+      parameters:
+        - name: location1
+          type: string
+          description: '经纬度,例如"113.926795,22.521971"'
+          in: query
+          pattern: '^[\d\.]*,[\d\.]*$'
+        - name: location2
+          type: string
+          description: '经纬度,例如"113.926795,22.521971"'
+          in: query
+          pattern: '^[\d\.]*,[\d\.]*$'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+            description: '连个坐标之间的距离,单位为米'
+  /house/average_price:
+    get:
+      tags:
+        - house
+      summary: '计算房子周围均价,如果周围房子价格少于一定数量,则返回错误'
+      operationId: handlers.house.average_price
+      parameters:
+        - name: location
+          type: string
+          description: '房子的经纬度,例如"113.926795,22.521971"'
+          in: query
+          pattern: '^[\d\.]*,[\d\.]*$'
+        - name: radius
+          type: string
+          default: '1000'
+          in: query
+          description: 周围多少米范围内
+          pattern: '^[\d\.]*$'
+        - name: no_less_then
+          type: string
+          description: '如果周围房子少于这个数量,则返回错误'
+          in: query
+          pattern: '^[0-9]*$'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+            description: 房屋均价

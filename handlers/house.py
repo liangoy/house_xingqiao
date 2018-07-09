@@ -1,11 +1,20 @@
 from services.gaode import gaode_service
 from services.predict import price_predictor
+from utils import fts
 
 
 def location(**kwargs):
     address = kwargs['address']
     address, location = gaode_service.address2location(address=address)
     return {'address': address, 'location': location}
+
+
+def distance(**kwargs):
+    location1 = kwargs['location1']
+    location2 = kwargs['location2']
+    location1 = [float(i) for i in location1.split(',')]
+    location2 = [float(i) for i in location2.split(',')]
+    return str(fts.distance(location1, location2))
 
 
 def price_predicted(**kwargs):
@@ -26,3 +35,6 @@ def around_info(**kwargs):
     for i in info:
         info[i] = str(info[i])
     return info
+
+def average_price(**kwargs):
+    return "0"
