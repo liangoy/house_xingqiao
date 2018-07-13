@@ -16,21 +16,26 @@ paths:
       summary: '输入房屋地址,得到房屋坐标'
       parameters:
         - name: address
-          description: 房屋的地址
+          description: '房屋的地址,多个房屋地址用'',''隔开,最多20个'
           in: query
           type: string
       responses:
         '200':
           description: 返回房屋坐标
           schema:
-            type: object
-            properties:
-              address:
-                type: string
-                description: 房屋的地
-              location:
-                type: string
-                description: '房屋的坐标,例如 ''113.926795,22.521971'''
+            type: array
+            items:
+              type: object
+              properties:
+                address:
+                  type: string
+                  description: 所要查询的地址
+                formatted_address:
+                  type: string
+                  description: 格式化数据
+                location:
+                  type: string
+                  description: 经纬度
   /house/price_predicted:
     get:
       summary: '返回房屋的预测价格,以及各个因素的影响'
@@ -173,7 +178,7 @@ paths:
           description: '如果周围房子少于这个数量,则返回错误'
           in: query
           pattern: '^[0-9]*$'
-          default: "10"
+          default: '10'
       responses:
         '200':
           description: OK
@@ -185,5 +190,3 @@ paths:
           schema:
             type: string
             description: 房屋数量少于no_less_than
-
-

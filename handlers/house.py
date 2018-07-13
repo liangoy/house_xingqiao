@@ -7,8 +7,7 @@ import numpy as np
 
 def location(**kwargs):
     address = kwargs['address']
-    address, location = gaode_service.address2location(address=address)
-    return {'address': address, 'location': location}
+    return gaode_service.address2location(address=address)
 
 
 def distance(**kwargs):
