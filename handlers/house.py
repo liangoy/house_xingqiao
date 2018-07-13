@@ -7,7 +7,12 @@ import numpy as np
 
 def location(**kwargs):
     address = kwargs['address']
-    return gaode_service.address2location(address=address)
+    if ','not in address:
+        addr_list=[address]
+    else:
+        addr_list=address.split(',')
+    addr_list=addr_list[:200]
+    return gaode_service.address2location(address_list=addr_list)
 
 
 def distance(**kwargs):

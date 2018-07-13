@@ -15,13 +15,10 @@ class Gaode_service():
         par['sign'] = gaode.encrypt(par=par, key=self.key)
         return par
 
-    def address2location(self, address=None, city=None, batch='false', output='JSON', concurrent=1):
+    def address2location(self, address_list=None, city=None, batch='false', output='JSON', concurrent=1):
         par_list = []
         url = 'http://restapi.amap.com/v3/geocode/geo?parameters'
-        addr_list = address.split(',')
-        if addr_list == []:
-            addr_list = [address]
-        for address in addr_list:
+        for address in address_list:
             par = {
                 'address': address,
                 'batch': batch,
@@ -29,10 +26,8 @@ class Gaode_service():
             }
             par = self.add_sign(par)
             par_list.append(par)
-        par_list = par_list[:20]
 
         data = []
-
         async def get(pl):
             async with aiohttp.ClientSession() as session:
                 for par in pl:

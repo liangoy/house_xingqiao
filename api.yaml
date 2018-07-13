@@ -16,7 +16,7 @@ paths:
       summary: '输入房屋地址,得到房屋坐标'
       parameters:
         - name: address
-          description: '房屋的地址,多个房屋地址用'',''隔开,最多20个'
+          description: '房屋的地址,多个房屋地址用'',''隔开,最多200个'
           in: query
           type: string
       responses:
