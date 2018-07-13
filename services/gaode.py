@@ -1,10 +1,12 @@
 import config
 import requests
-import grequests
 from utils import gaode
 import json
+import aiohttp
+import asyncio
 class Gaode_service():
     key=config.GAODE_KEY
+    loop = asyncio.get_event_loop()
     def add_sign(self,par):
         par['key']=self.key
         par['sign'] = gaode.encrypt(par=par, key=self.key)
@@ -42,11 +44,15 @@ class Gaode_service():
 
             par = self.add_sign(par)
             par_list.append(par)
-        tasks=[grequests.get(url,params=i) for i in par_list]
-        resp=list(zip(key_words.split(','),grequests.map(tasks)))
-        for r in resp:
-            r[1].close()
-        return {i[0]:json.loads(i[1].text)['count'] for i in resp}
+
+        data={}
+        async def get(pl):
+            async with aiohttp.ClientSession() as session:
+                for par in pl:
+                    async with session.get(url,params=par) as resp:
+                        data[par['keywords']]=json.loads(await resp.text())['count']
+        self.loop.run_until_complete(asyncio.wait([get(par_list)]))
+        return data
 
 
 gaode_service=Gaode_service()
@@ -59,4 +65,4 @@ if __name__=='__main__':
     #addr='广东省深圳市南山区南油南光路65-22号'
     #addr = '深圳南山华侨城沙河东路186号深圳湾畔花园D栋8091厨2室1阳台1卫1厅|广东省-深圳市-深圳湾畔花园-1厨2室1阳台1卫1厅'
     pprint(gs.address2location(address=addr))
-    pprint(gs.around(location=gs.address2location(address=addr)[1],key_words='学校'))
+    pprint(gs.around(location=gs.address2location(address=addr)[1],key_words='学校,银行'))
