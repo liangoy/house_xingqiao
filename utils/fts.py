@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 def distance(location1,location2):#eg:location1=(0,0),location2=(1,1)
     """
@@ -15,6 +16,13 @@ def distance(location1,location2):#eg:location1=(0,0),location2=(1,1)
     c = 2 * math.asin(math.sqrt(a))
     r = 6371*10**3  # 地球平均半径，单位为米
     return c * r
+
+def one_hot(lis):
+    n=np.zeros([len(lis),max(lis)+1])
+    for i,j in enumerate(lis):
+        n[i,j]=1
+    return n
+
 
 if __name__=='__main__':
     dis=distance((117.542204,24.999849),(117.522364,25.009424))

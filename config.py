@@ -4,3 +4,5 @@ GAODE_KEY='28b07e24f4fb819ea8516b9715d77ca3'
 
 HOUSE_SALE=pd.read_csv('/home/liangoy/Desktop/project/house_xingqiao/data_sets/anjuke_sale_preprocessing.csv')
 HOUSE_RENT=pd.read_csv('/home/liangoy/Desktop/project/house_xingqiao/data_sets/anjuke_rent_preprocessing.csv')
+
+MODEL_SALE_XGB='/home/liangoy/Desktop/project/house_xingqiao/model/xgb_sale'
