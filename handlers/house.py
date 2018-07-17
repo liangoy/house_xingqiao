@@ -23,7 +23,10 @@ def distance(**kwargs):
     return str(fts.distance(location1, location2))
 
 
-def price_predicted(**kwargs):
+def rental_price_predicted(**kwargs):
+    return {'price_predicted': "0", 'influnce': kwargs}
+
+def selling_price_predicted(**kwargs):
     return {'price_predicted': "0", 'influnce': kwargs}
 
 
@@ -36,15 +39,32 @@ def around_info(**kwargs):
     return info
 
 
-def average_price(**kwargs):
+def average_rental_price(**kwargs):
     location = kwargs['location']
     radius = float(kwargs['radius'])
     no_less_than = int(kwargs['no_less_than'])
 
     location = [float(i) for i in location.split(',')]
-    loc = [[float(i) for i in j.split(',')] for j in config.HOUSE_DF.location]
+    loc = [[float(i) for i in j.split(',')] for j in config.HOUSE_RENT.location]
     dis = [fts.distance(location, i) for i in loc]
-    price = list(config.HOUSE_DF.price / config.HOUSE_DF.area)
+    price = list(config.HOUSE_RENT.price / config.HOUSE_RENT.area)
+    dis_price = list(zip(dis, price))
+    dis_price = sorted(dis_price, key=lambda x: x[0])
+    dis_price = [i for i in dis_price if i[0] < radius][1:]
+    if len(dis_price) >= no_less_than:
+        return np.mean([i[1] for i in dis_price])
+    else:
+        return '房屋数量少于no_less_than', 401
+
+def average_selling_price(**kwargs):
+    location = kwargs['location']
+    radius = float(kwargs['radius'])
+    no_less_than = int(kwargs['no_less_than'])
+
+    location = [float(i) for i in location.split(',')]
+    loc = [[float(i) for i in j.split(',')] for j in config.HOUSE_SALE.location]
+    dis = [fts.distance(location, i) for i in loc]
+    price = list(config.HOUSE_SALE.price)
     dis_price = list(zip(dis, price))
     dis_price = sorted(dis_price, key=lambda x: x[0])
     dis_price = [i for i in dis_price if i[0] < radius][1:]

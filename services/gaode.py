@@ -80,11 +80,28 @@ gaode_service = Gaode_service()
 if __name__ == '__main__':
     from pprint import pprint
 
-    gs = Gaode_service()
+    #gs = Gaode_service()
     # addr='漳州市华安县靖河路37号8栋'
-    addr = '漳州市华安县华丰中学,华安县湖滨花园'
+    #addr = '漳州市华安县华丰中学,华安县湖滨花园'
     # addr='深圳市光明新区公明光明大道光明1号'
     # addr='广东省深圳市南山区南油南光路65-22号'
     # addr = '深圳南山华侨城沙河东路186号深圳湾畔花园D栋8091厨2室1阳台1卫1厅|广东省-深圳市-深圳湾畔花园-1厨2室1阳台1卫1厅'
-    pprint(gs.address2location(address=addr))
+    #pprint(gs.address2location(address=addr))
     # pprint(gs.around(location=gs.address2location(address=addr)[1],key_words='学校,银行'))
+    loop = asyncio.get_event_loop()
+    import time
+    s=time.time()
+    async def get(n):
+        async with aiohttp.ClientSession() as session:
+            for i in range(n):
+                async with session.get('http://www.baidu.com') as resp:
+                    print(len(await resp.text()))
+    loop.run_until_complete(asyncio.wait([get(10)]))
+    loop.close()
+    e=time.time()
+    print(e - s)
+    for i in range(10):
+        print(len(requests.get('http://baidu.com').text))
+    e1=time.time()
+
+    print(e1-e)
