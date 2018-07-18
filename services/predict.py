@@ -1,21 +1,28 @@
 import xgboost as xgb
 import config
-import requests
+
 class Price_predictor():
     sale_model=xgb.Booster(model_file=config.MODEL_SALE_XGB)
 
-    def predict_selling_price(self,address,face,area,structure,floor,total_floor):
-        requests.get()
+    def predict_selling_price(self,area,year,rooms,living_rooms,wc,total_floors,bus_stop,hospital,subway_station,school,hotel,bank,average_rental_price,average_selling_price,face,decoration,floor_type):
 
+        par=[area,year,rooms,living_rooms,wc,total_floors,bus_stop,hospital,subway_station,school,hotel,bank,average_rental_price,average_selling_price]
 
+        face_one_hot = [0] * 8
+        face_one_hot[int(face)]=1
+        decoration_one_hot = [0] * 4
+        decoration_one_hot[int(decoration)]=1
+        floor_type_one_hot = [0] * 4
+        floor_type_one_hot[int(floor_type)]=1
 
-        [area,year,rooms,living_rooms,wc,total_floors,bus_stop,hospital,subway_station,school,hotel,bank,average_rental_price,average_selling_price,'face','decoration','floor_type']
-        ['area', 'year', 'rooms', 'living_rooms', 'wc', 'total_floors', 'bus_stop', 'hospital', 'subway_station',
-         'school', 'hotel', 'bank', 'average_rental_price', 'average_selling_price', 'label', 0, 1, 2, 3, 4, 5, 6, 7, 8,
-         9, 10, 11, 12, 13, 14, 15]
+        par=par+face_one_hot+decoration_one_hot+floor_type_one_hot
 
+        print(par)
 
-        price_predicted=self.sale_model.predict()
+        par=[[int(i)for i in par]]
+
+        data=xgb.DMatrix(par)
+        price_predicted = self.sale_model.predict(data)[0]
         influence={
             'address':0,
             'face':0,
@@ -28,3 +35,7 @@ class Price_predictor():
         return price_predicted,influence
 
 price_predictor=Price_predictor()
+
+if __name__=='__main__':
+    par=[50,2008,3,5,1,10,5,1,1,5,20,20,5000,50000,3,2,3]
+    print(price_predictor.predict_selling_price(*par))

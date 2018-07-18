@@ -7,11 +7,11 @@ import numpy as np
 
 def location(**kwargs):
     address = kwargs['address']
-    if ','not in address:
-        addr_list=[address]
+    if ',' not in address:
+        addr_list = [address]
     else:
-        addr_list=address.split(',')
-    addr_list=addr_list[:200]
+        addr_list = address.split(',')
+    addr_list = addr_list[:200]
     return gaode_service.address2location(address_list=addr_list)
 
 
@@ -21,22 +21,6 @@ def distance(**kwargs):
     location1 = [float(i) for i in location1.split(',')]
     location2 = [float(i) for i in location2.split(',')]
     return str(fts.distance(location1, location2))
-
-
-def rental_price_predicted(**kwargs):
-    return {'price_predicted': "0", 'influnce': kwargs}
-
-def selling_price_predicted(**kwargs):
-    return {'price_predicted': "0", 'influnce': kwargs}
-
-
-def around_info(**kwargs):
-    location = kwargs['location']
-    radius = kwargs['radius']
-    info=gaode_service.around(key_words='银行,学校,医院,宾馆,公交站,地铁站',location=location,radius=radius)
-    for i in info:
-        info[i] = str(info[i])
-    return info
 
 
 def average_rental_price(**kwargs):
@@ -56,6 +40,7 @@ def average_rental_price(**kwargs):
     else:
         return '房屋数量少于no_less_than', 401
 
+
 def average_selling_price(**kwargs):
     location = kwargs['location']
     radius = float(kwargs['radius'])
@@ -72,3 +57,70 @@ def average_selling_price(**kwargs):
         return np.mean([i[1] for i in dis_price])
     else:
         return '房屋数量少于no_less_than', 401
+
+
+def rental_price_predicted(**kwargs):
+    area = kwargs['area']
+    year = kwargs['year']
+    rooms = kwargs['rooms']
+    wc = kwargs['wcs']
+    living_rooms = kwargs['living_rooms']
+    floor_type = kwargs['floor_type']
+    total_floors = kwargs['total_floor']
+    face = kwargs['face']
+    decoration = kwargs['decoration']
+    address = kwargs['address']
+
+    location = gaode_service.address2location(address_list=[address])[0]['location']
+    around = gaode_service.around(key_words='银行,学校,医院,宾馆,公交站,地铁站', location=location, radius=500)
+    bus_stop, hospital, subway_station, school, hotel, bank = around['公交站'], around['医院'], around['地铁站'], around['学校'], \
+                                                              around['宾馆'], around['银行']
+    arp = average_rental_price(location=location, radius=500, no_less_than=5)
+    asp = average_selling_price(location=location, radius=500, no_less_than=5)
+
+    if len(arp)>1 or len(asp)>1:
+        return '地区过于偏僻',402
+
+    par = [area, year, rooms, living_rooms, wc, total_floors, bus_stop, hospital, subway_station, school, hotel, bank,
+           arp, asp, face, decoration, floor_type]
+    return price_predictor.predict_selling_price(*par)
+
+
+def selling_price_predicted(**kwargs):
+    area = kwargs['area']
+    year = kwargs['year']
+    rooms = kwargs['rooms']
+    wc = kwargs['wcs']
+    living_rooms = kwargs['living_rooms']
+    floor_type = kwargs['floor_type']
+    total_floors = kwargs['total_floor']
+    face = kwargs['face']
+    decoration = kwargs['decoration']
+    address = kwargs['address']
+
+    location = gaode_service.address2location(address_list=[address])[0]['location']
+    around = gaode_service.around(key_words='银行,学校,医院,宾馆,公交站,地铁站', location=location, radius=500)
+    bus_stop, hospital, subway_station, school, hotel, bank = around['公交站'], around['医院'], around['地铁站'], around['学校'], \
+                                                              around['宾馆'], around['银行']
+    arp = average_rental_price(location=location, radius=500, no_less_than=5)
+    asp = average_selling_price(location=location, radius=500, no_less_than=5)
+
+    if type(asp)==tuple or type(arp)==tuple:
+        return '地区过于偏僻,找不到周围房子的均价',402
+
+    par = [area, year, rooms, living_rooms, wc, total_floors, bus_stop, hospital, subway_station, school, hotel, bank,
+           arp, asp, face, decoration, floor_type]
+    p=price_predictor.predict_selling_price(*par)
+    return {'price_predicted':str(p[0]),'influence':p[1]}
+
+
+def around_info(**kwargs):
+    location = kwargs['location']
+    radius = kwargs['radius']
+    info = gaode_service.around(key_words='银行,学校,医院,宾馆,公交站,地铁站', location=location, radius=radius)
+    for i in info:
+        info[i] = str(info[i])
+    return info
+
+if __name__=='__main__':
+    print(len(average_selling_price(**{'location':'1,1','radius':'500','no_less_than':'5'})))

@@ -48,9 +48,6 @@ data.drop('decoration', axis=1, inplace=True)
 data.drop('floor_type', axis=1, inplace=True)
 
 data = data.dropna()
-
-print(list(data.columns))
-
 data = shuffle(data)
 
 
@@ -87,7 +84,7 @@ params = {
 
 dtrain = xgb.DMatrix(x_train, y_train_)
 dtest = xgb.DMatrix(x_test,y_test_)
-num_rounds = 600000
+num_rounds = 5000
 
 plst = params.items()
 model = xgb.train(plst, dtrain, num_rounds,evals=[(dtrain, 'train'),(dtest,'test')])

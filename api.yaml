@@ -130,16 +130,26 @@ paths:
           in: query
           pattern: '^[0-9]+$'
           type: string
-        - name: floor
+        - name: floor_type
           type: string
-          description: 住在第几层
+          description: '0代表未知,1代表底层,2代表中层,3代表高层'
           in: query
-          pattern: '^[0-9]+$'
+          pattern: ^\d$
         - name: total_floor
           type: string
           in: query
           description: 总共有几层
           pattern: '^[0-9]+$'
+        - name: decoration
+          type: string
+          in: query
+          pattern: ^\d$
+          description: '装修程度,0代表毛坯,1代表简单装修,2代表精装修,3代表豪华装修'
+        - name: year
+          type: string
+          pattern: ^\d+$
+          in: query
+          description: 房屋建造年份
       responses:
         '200':
           description: OK
@@ -152,6 +162,10 @@ paths:
               influence:
                 type: object
                 description: 各个因素对预测价格的影响
+        '402':
+          description: error,地区过于偏僻,找不到周围房子的均价
+          schema:
+            type: string
   /house/around_info:
     get:
       summary: 房屋周围信息
