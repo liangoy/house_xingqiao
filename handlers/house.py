@@ -2,6 +2,7 @@ from services.gaode import gaode_service
 from services.predict import price_predictor
 from utils import fts
 import config
+from copy import deepcopy
 import numpy as np
 
 
@@ -78,8 +79,8 @@ def rental_price_predicted(**kwargs):
     arp = average_rental_price(location=location, radius=500, no_less_than=5)
     asp = average_selling_price(location=location, radius=500, no_less_than=5)
 
-    if len(arp)>1 or len(asp)>1:
-        return '地区过于偏僻',402
+    if len(arp) > 1 or len(asp) > 1:
+        return '地区过于偏僻', 402
 
     par = [area, year, rooms, living_rooms, wc, total_floors, bus_stop, hospital, subway_station, school, hotel, bank,
            arp, asp, face, decoration, floor_type]
@@ -105,13 +106,58 @@ def selling_price_predicted(**kwargs):
     arp = average_rental_price(location=location, radius=500, no_less_than=5)
     asp = average_selling_price(location=location, radius=500, no_less_than=5)
 
-    if type(asp)==tuple or type(arp)==tuple:
-        return '地区过于偏僻,找不到周围房子的均价',402
+    if type(asp) == tuple or type(arp) == tuple:
+        return '地区过于偏僻,找不到周围房子的均价', 402
 
     par = [area, year, rooms, living_rooms, wc, total_floors, bus_stop, hospital, subway_station, school, hotel, bank,
            arp, asp, face, decoration, floor_type]
-    p=price_predictor.predict_selling_price(*par)
-    return {'price_predicted':str(p[0]),'influence':p[1]}
+    price_predicted = price_predictor.predict_selling_price(*par)
+
+    area_par = [deepcopy(par) for i in range(180)]
+    for i, j in enumerate(area_par):
+        j[0] = 20 + i
+    year_par = [deepcopy(par) for i in range(30)]
+    for i, j in enumerate(year_par):
+        j[1] = 1988 + i
+    rooms_par = [deepcopy(par) for i in range(6)]
+    for i, j in enumerate(rooms_par):
+        j[2] = 0 + i
+    living_rooms_par = [deepcopy(par) for i in range(4)]
+    for i, j in enumerate(living_rooms_par):
+        j[3] = 0 + i
+    wc_par = [deepcopy(par) for i in range(4)]
+    for i, j in enumerate(wc_par):
+        j[4] = 0 + i
+    total_floors_par = [deepcopy(par) for i in range(40)]
+    for i, j in enumerate(total_floors_par):
+        j[5] = 0 + i
+    face_par = [deepcopy(par) for i in range(8)]
+    for i, j in enumerate(face_par):
+        j[-3] = 0 + i
+    decoration_par = [deepcopy(par) for i in range(4)]
+    for i, j in enumerate(decoration_par):
+        j[-2] = 0 + i
+    floor_type_par = [deepcopy(par) for i in range(4)]
+    for i, j in enumerate(floor_type_par):
+        j[-1] = 0 + i
+
+    influence = {
+        'area': price_predicted - np.mean([float(price_predictor.predict_selling_price(*i)) for i in area_par]),
+        'year': price_predicted - np.mean([float(price_predictor.predict_selling_price(*i)) for i in year_par]),
+        'rooms': price_predicted - np.mean([float(price_predictor.predict_selling_price(*i)) for i in rooms_par]),
+        'living_rooms': price_predicted - np.mean(
+            [float(price_predictor.predict_selling_price(*i)) for i in living_rooms_par]),
+        'wc': price_predicted - np.mean([float(price_predictor.predict_selling_price(*i)) for i in wc_par]),
+        'total_floors': price_predicted - np.mean(
+            [float(price_predictor.predict_selling_price(*i)) for i in total_floors_par]),
+        'face': price_predicted - np.mean([float(price_predictor.predict_selling_price(*i)) for i in face_par]),
+        'decoration': price_predicted - np.mean(
+            [float(price_predictor.predict_selling_price(*i)) for i in decoration_par]),
+        'floor_type': price_predicted - np.mean(
+            [float(price_predictor.predict_selling_price(*i)) for i in floor_type_par]),
+    }
+
+    return {'price_predicted': str(price_predicted), 'influence': influence}
 
 
 def around_info(**kwargs):
@@ -122,5 +168,6 @@ def around_info(**kwargs):
         info[i] = str(info[i])
     return info
 
-if __name__=='__main__':
-    print(len(average_selling_price(**{'location':'1,1','radius':'500','no_less_than':'5'})))
+
+if __name__ == '__main__':
+    print(len(average_selling_price(**{'location': '1,1', 'radius': '500', 'no_less_than': '5'})))

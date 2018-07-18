@@ -23,16 +23,7 @@ class Price_predictor():
 
         data=xgb.DMatrix(par)
         price_predicted = self.sale_model.predict(data)[0]
-        influence={
-            'address':0,
-            'face':0,
-            'area':0,
-            'romms':0,
-            'living_rooms':0,
-            'floor':0,
-            'total_floor':0
-        }
-        return price_predicted,influence
+        return price_predicted
 
 price_predictor=Price_predictor()
 
