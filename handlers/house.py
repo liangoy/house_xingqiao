@@ -88,8 +88,8 @@ def rental_price_predicted(**kwargs):
 
 
 def selling_price_predicted(**kwargs):
-    area = kwargs['area']
-    year = kwargs['year']
+    area = float( kwargs['area'])
+    year = float(kwargs['year'])
     rooms = kwargs['rooms']
     wc = kwargs['wcs']
     living_rooms = kwargs['living_rooms']
