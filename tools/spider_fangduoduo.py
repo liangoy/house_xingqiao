@@ -20,7 +20,6 @@ headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,imag
            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/66.0.3359.181 Chrome/66.0.3359.181 Safari/537.36'}
 
 url = 'http://shenzhen.fangdd.com/chengjiao/907510.html'
-loop = asyncio.get_event_loop()
 
 
 def anal_page(text):
@@ -54,14 +53,18 @@ async def async_get(num_list):
             url = 'http://shenzhen.fangdd.com/chengjiao/%s.html' % (str(num))
             async with session.get(url, headers=headers) as resp:
                 if resp.status < 400:
-                    data[num] = anal_page(await resp.text())
+                    try:
+                        data[num] = anal_page(await resp.text())
+                    except KeyboardInterrupt:
+                        break
+                    except:
+                        data[num]={}
                 else:
                     data[num] = {}
     return data
 
-
+loop = asyncio.get_event_loop()
 def downloads(num_list):
-    loop = asyncio.get_event_loop()
     res = loop.run_until_complete(asyncio.wait([async_get(num_list)]))
     return res[0].pop().result()
 
