@@ -6,8 +6,6 @@ import config
 from sklearn.utils import shuffle
 from utils import fts
 
-
-
 data = deepcopy(config.HOUSE_SALE).dropna()
 
 #data-preprocessing-----------------------------------------------------
@@ -22,20 +20,15 @@ print(len(data))
 
 
 data['label'] = data['price']
-data.drop('address', axis=1, inplace=True)
-data.drop('Unnamed: 0', axis=1, inplace=True)
-data.drop('price', axis=1, inplace=True)
-data.drop('location', axis=1, inplace=True)
-
+for i in ['address','Unnamed: 0','price','location']:
+    data.drop(i, axis=1, inplace=True)
 
 # data.drop('average_selling_price', axis=1, inplace=True)
 # data.drop('average_rental_price', axis=1, inplace=True)
 
-
 lis=[]
-lis.append(pd.DataFrame(fts.one_hot(data.face)))
-lis.append(pd.DataFrame(fts.one_hot(data.decoration)))
-lis.append(pd.DataFrame(fts.one_hot(data.floor_type)))
+for i in ['face','decoration','floor_type']:
+    lis.append(pd.DataFrame(fts.one_hot(data[i])))
 
 data_temp=pd.concat(lis,axis=1)
 data_temp.columns=range(len(data_temp.columns))
@@ -43,26 +36,20 @@ data_temp.columns=range(len(data_temp.columns))
 for i in data_temp.columns:
     data[i] = data_temp[i]
 
-data.drop('face', axis=1, inplace=True)
-data.drop('decoration', axis=1, inplace=True)
-data.drop('floor_type', axis=1, inplace=True)
+for i in ['face','decoration','floor_type']:
+    data.drop(i, axis=1, inplace=True)
 
 data = data.dropna()
 data = shuffle(data)
 
-
 data_train = data[:len(data)//10*7]
 data_test = data[len(data)//10*7:]
-
-
 
 y_train_ = np.array(data_train['label'])
 x_train = np.array(data_train.drop('label',axis=1))
 
-
 y_test_ = np.array(data_test['label'])
 x_test = np.array(data_test.drop('label',axis=1))
-
 
 params = {
     'booster': 'gbtree',

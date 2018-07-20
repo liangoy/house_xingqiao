@@ -5,6 +5,8 @@ from scipy.optimize import leastsq
 import numpy as np
 
 
+
+
 def bn(x):
     mean, var = tf.nn.moments(x, axes=[0])
     var += 0.1 ** 7
@@ -29,13 +31,17 @@ def layer_basic(x, size=0, with_b=True):
         return tf.matmul(x, w)
 
 
-def res(x):
-    lay1 = tf.nn.elu(layer_basic(bn_with_wb(x)))
-    lay2 = tf.nn.elu(layer_basic(bn_with_wb(lay1)))
-    lay3 = tf.nn.elu(layer_basic(bn_with_wb(lay2)))
-    lay4 = tf.nn.elu(layer_basic(bn_with_wb(lay3)))
-    lay5 = tf.nn.elu(layer_basic(bn_with_wb(lay4)))
-    return lay5 + x
+def res(x,with_bn=True):
+    if not with_bn:
+        res_bn=lambda lay:lay
+    else:
+        res_bn=bn_with_wb
+    lay1 = tf.nn.elu(layer_basic(res_bn(x)))
+    lay2 = tf.nn.elu(layer_basic(res_bn(lay1)))
+    lay3 = tf.nn.elu(layer_basic(res_bn(lay2)))
+    lay4 = tf.nn.elu(layer_basic(res_bn(lay3)))
+    lay5 = layer_basic(bn_with_wb(lay4))
+    return tf.nn.elu(lay5 + x)
 
 
 def conv2d(input, conv_filter, stride=[1, 1, 1, 1], padding='SAME', ksize=None, pool_stride=[1, 1, 1, 1],

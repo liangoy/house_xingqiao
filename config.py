@@ -11,7 +11,13 @@ HOUSE_RENT=pd.read_csv(ROOT_PATH+'/data_sets/anjuke_rent_preprocessing.csv')
 
 MODEL_SALE_XGB=ROOT_PATH+'/model/xgb_sale'
 
+MONGO_STRING='mongodb://root:xingqiaodb2018@120.76.231.5/admin'
+
 if fts.get_host_ip()=='120.76.231.5':
     PORT='80'
 else:
     PORT='8090'
+
+
+if __name__=='__main__':
+    print('hello')

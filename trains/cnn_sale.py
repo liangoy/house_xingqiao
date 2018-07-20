@@ -1,3 +1,5 @@
+import tensorflow as tf
+
 import pandas as pd
 import numpy as np
 from copy import deepcopy
@@ -71,7 +73,12 @@ def next(batch_size=batch_size, data=None):
 x = tf.placeholder(shape=[batch_size, shape_x], dtype=tf.float32)
 y_ = tf.placeholder(shape=[batch_size], dtype=tf.float32)
 
-lay1 = tf.nn.elu(ml.layer_basic(tf.nn.elu(x), 32))
+X=tf.reshape(x,[batch_size,1,shape_x,1])
+
+c1=ml.conv2d(X,conv_filter=[1,shape_x,1,32],padding='VALID',ksize=[1,1,1,1],pool_padding='VALID')
+
+lay1=tf.reshape(c1,[batch_size,32])
+
 lay2 = tf.nn.elu(ml.layer_basic(lay1, 8))
 
 lis = [lay2]
