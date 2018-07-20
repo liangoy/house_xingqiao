@@ -1,5 +1,6 @@
 import pymongo
 import re
+import time
 import aiohttp
 import asyncio
 from lxml.etree import HTML as leh
@@ -66,15 +67,21 @@ def downloads(num_list):
 
 
 while True:
+    t0=time.time()
     dic = {i['_id']: i for i in col.find({'times': 0, 'lock': 0}).limit(200)}
-    col.update({'_id': {'$in': list(dic.keys())}}, {'$set': {'lock': 1}})
+    t1=time.time()
+    col.update_many({'_id': {'$in': list(dic.keys())}}, {'$set': {'lock': 1}})
+    t2=time.time()
     try:
         data = downloads(list(dic.keys()))
     except KeyboardInterrupt:
         break
     except Exception as e:
         print(e)
+    t3=time.time()
     for i in data:
         data[i]['times'] = dic[i]['times']+1
         data[i]['lock'] = 0
         col.update_one({'_id':i},{'$set':data[i]})
+    t4=time.time()
+    print(t1-t0,t2-t1,t3-t2,t4-t3,t4-t0,len(data))
