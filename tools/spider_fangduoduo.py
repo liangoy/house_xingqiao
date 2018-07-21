@@ -5,8 +5,8 @@ import aiohttp
 import asyncio
 from lxml.etree import HTML as leh
 
-db = pymongo.MongoClient('mongodb://root:xingqiaodb2018@120.76.231.5/admin')
-col = db.house.fangduoduo
+client = pymongo.MongoClient('mongodb://root:xingqiaodb2018@120.76.231.5/admin')
+col = client.house.fangduoduo
 
 headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
            'Accept-Encoding': 'gzip, deflate',

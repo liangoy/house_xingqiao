@@ -23,8 +23,8 @@ class Gaode_service():
                 'output': output,
             }
             par = self.add_sign(par)
-            par_list.append(par)
-
+            par_list.append(par
+        )
         resp_list = async_http.get([{'url': url, 'params': par} for par in par_list])
 
         data = []
