@@ -65,8 +65,8 @@ async def async_get(num_list):
 
 loop = asyncio.get_event_loop()
 def downloads(num_list):
-    res = loop.run_until_complete(asyncio.wait([async_get(num_list)]))
-    return res[0].pop().result()
+    res = loop.run_until_complete(async_get(num_list))
+    return res
 
 
 while True:

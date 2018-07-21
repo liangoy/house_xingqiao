@@ -1,6 +1,9 @@
 import math
 import numpy as np
 import socket
+import aiohttp
+import asyncio
+import json
 
 def distance(location1,location2):#eg:location1=(0,0),location2=(1,1)
     """
@@ -35,6 +38,27 @@ def get_host_ip():
     return ip
 
 
+class Async_http():
+    loop=asyncio.get_event_loop()
+    async def _async_http_get(self,params_list):
+        data=[None]*len(params_list)
+        async with aiohttp.ClientSession() as session:
+            for index,par in enumerate(params_list):
+                async with session.get(**par) as resp:
+                    data[index] = {
+                        'status_code':resp.status,
+                        'content':await resp.read()
+                    }
+        return data
+    def get(self,params_list):
+        resp=self.loop.run_until_complete(self._async_http_get(params_list))
+        return resp
+
+async_http=Async_http()
+
+
 if __name__=='__main__':
-    dis=distance((117.542204,24.999849),(117.522364,25.009424))
-    print(dis)
+    import asyncio
+    loop=asyncio.get_event_loop()
+    resp=async_http.get([{'url':'http://baidu.com'},{'url':'http://baidu.com'}])
+    print(resp)
