@@ -12,7 +12,7 @@ while True:
     _id=ins['_id']
     t1=time.time()
     try:
-        r=requests.get('http://120.76.231.5/house/around_info?location='+loc+'&radius=1000')
+        r=requests.get('http://127.0.0.1:8090/house/around_info?location='+loc+'&radius=1000')
         r.close()
         data=r.json()
         print(data)

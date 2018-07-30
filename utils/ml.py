@@ -5,8 +5,6 @@ from scipy.optimize import leastsq
 import numpy as np
 
 
-
-
 def bn(x):
     mean, var = tf.nn.moments(x, axes=[0])
     var += 0.1 ** 7
@@ -31,37 +29,36 @@ def layer_basic(x, size=0, with_b=True):
         return tf.matmul(x, w)
 
 
-def res(x,with_bn=True):
+def res(x, with_bn=True):
     if not with_bn:
-        res_bn=lambda lay:lay
+        res_bn = lambda lay: lay
     else:
-        res_bn=bn_with_wb
-    lay1 = tf.nn.elu(layer_basic(res_bn(x)))
-    lay2 = tf.nn.elu(layer_basic(res_bn(lay1)))
-    lay3 = tf.nn.elu(layer_basic(res_bn(lay2)))
-    lay4 = tf.nn.elu(layer_basic(res_bn(lay3)))
-    lay5 = layer_basic(bn_with_wb(lay4))
-    return tf.nn.elu(lay5 + x)
+        res_bn = bn
+    lay1 = tf.nn.relu(layer_basic(res_bn(x)))
+    lay2 = tf.nn.relu(layer_basic(res_bn(lay1)))
+    lay3 = tf.nn.relu(layer_basic(res_bn(lay2)))
+    lay4 = tf.nn.relu(layer_basic(res_bn(lay3)))
+    lay5 = tf.nn.relu(layer_basic(res_bn(lay4)))
+    return lay5+x
 
 
-def conv2d(input, conv_filter, stride=[1, 1, 1, 1], padding='SAME', ksize=None, pool_stride=[1, 1, 1, 1],
-           pool_padding='SAME',nn=tf.nn.elu):
+def conv2d(input, conv_filter, stride=[1, 1, 1, 1], padding=None):
     w = tf.Variable(tf.random_uniform(conv_filter, -1.0, 1.0))
     b = tf.Variable(tf.random_uniform([conv_filter[-1]], -1.0, 1.0))
-    conv2d_out = nn(tf.nn.conv2d(input, w, strides=stride, padding=padding) + b)
-    return tf.nn.max_pool(conv2d_out, ksize=ksize, strides=pool_stride, padding=pool_padding)
+    conv2d_out = tf.nn.conv2d(input, w, strides=stride, padding=padding) + b
+    return conv2d_out
 
-def res_modify(x,y,x_to_modify):
-    func=lambda p,x:p[0]*x+p[1]
-    error=lambda p,x,y:func(p,x)-y
-    par=leastsq(error,(0,0),args=(x,y))[0]
-    x_to_modify=np.array(x_to_modify)
+
+def res_modify(x, y, x_to_modify):
+    func = lambda p, x: p[0] * x + p[1]
+    error = lambda p, x, y: func(p, x) - y
+    par = leastsq(error, (0, 0), args=(x, y))[0]
+    x_to_modify = np.array(x_to_modify)
     print(par)
-    return x_to_modify*par[0]+par[1]
+    return x_to_modify * par[0] + par[1]
 
-
-oo = list(pymongo.MongoClient().xingqiao.dataWithMsg.find())
-w2i = {i['word']: i['index'] for i in pymongo.MongoClient().xingqiao.w2iGt5000.find()}
+# oo = list(pymongo.MongoClient().xingqiao.dataWithMsg.find())
+# w2i = {i['word']: i['index'] for i in pymongo.MongoClient().xingqiao.w2iGt5000.find()}
 
 
 # def test(text):

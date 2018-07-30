@@ -106,9 +106,9 @@ paths:
           in: query
           type: string
         - name: face
-          description: '房屋的朝向,输入数字,(北:0,东北:1,东:2,东南:3,南:4,西南:5,西:6,西北:7)'
+          description: '房屋的朝向,输入数字,未知:0,北:1,东北:2,东:3,东南:4,南:5,西南:6,西:7,西北:8,东西:9,南北:10'
           type: string
-          pattern: '^[01234567]$'
+          pattern: '^\d{1,2}$'
           in: query
         - name: area
           description: '房屋的面积,单位是平方米,例如:90'
@@ -132,7 +132,7 @@ paths:
           type: string
         - name: floor_type
           type: string
-          description: '0代表未知,1代表底层,2代表中层,3代表高层'
+          description: '未知:0,地下室:1,低层:2,中层:3,高层:4,顶层:5'''
           in: query
           pattern: ^\d$
         - name: total_floor
@@ -145,7 +145,7 @@ paths:
           in: query
           pattern: ^\d$
           description: '装修程度,0代表毛坯,1代表简单装修,2代表精装修,3代表豪华装修'
-        - name: year
+        - name: build_date
           type: string
           pattern: ^\d+$
           in: query
@@ -163,7 +163,7 @@ paths:
                 type: object
                 description: 各个因素对预测价格的影响
         '402':
-          description: error,地区过于偏僻,找不到周围房子的均价
+          description: 'error,地区过于偏僻,找不到周围房子的均价'
           schema:
             type: string
   /house/around_info:

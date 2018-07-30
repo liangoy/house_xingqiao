@@ -1,61 +1,41 @@
 import tensorflow as tf
-
 import pandas as pd
 import numpy as np
 from copy import deepcopy
 import config
 from sklearn.utils import shuffle
-from utils import fts
-import tensorflow as tf
-from utils import ml
+from utils import fts, ml
+import time
 
-batch_size = 512
+batch_size = 2048
 
-data = deepcopy(config.HOUSE_SALE).dropna()
+data = pd.read_csv(config.ROOT_PATH + '/data_sets/fangdd_sale.csv')
+data.dropna(subset=['trade_date'], inplace=True)
 
-# data-preprocessing-----------------------------------------------------
-data = data[data.area < 300]
-data = data[data.price < 180000]
-data = data[1981 <= data.year]
-data = data[data.rooms <= 6]
-data = data[data.living_rooms <= 4]
-data = data[data.wc <= 7]
-#####################################################################
-print(len(data))
+data['trade_date'] = [time.mktime(tuple([int(i) for i in (t + '-01').split('-')[:3]]) + (0, 0, 0, 0, 0, 0)) for t in
+                      data.trade_date]
 
-data.drop('address', axis=1, inplace=True)
-data.drop('Unnamed: 0', axis=1, inplace=True)
-data.drop('location', axis=1, inplace=True)
+data.index = range(len(data.index))
 
-# data.drop('average_selling_price', axis=1, inplace=True)
-# data.drop('average_rental_price', axis=1, inplace=True)
+cnt = 0
+for i in ['face', 'floor_type']:
+    df_temp = pd.DataFrame(fts.one_hot(data[i]))
+    for j in df_temp.columns:
+        data[str(cnt)] = df_temp[j]
+        cnt += 1
 
+for i in ['_id', 'address', 'Unnamed: 0', 'community', 'floor', 'region', 'times', 'title', 'type', 'lock',
+          'total_price', 'face', 'floor_type']:
+    data.drop(i, axis=1, inplace=True)
 
-lis = []
-lis.append(pd.DataFrame(fts.one_hot(data.face)))
-lis.append(pd.DataFrame(fts.one_hot(data.decoration)))
-lis.append(pd.DataFrame(fts.one_hot(data.floor_type)))
+for i in ['total_floor', 'area', 'build_date', 'rooms', 'living_rooms','around_price']:
+    data[i] = data[i].fillna(data[i].mean())
 
-data_temp = pd.concat(lis, axis=1)
-data_temp.columns = range(len(data_temp.columns))
-
-for i in data_temp.columns:
-    data[i] = data_temp[i]
-
-data.drop('face', axis=1, inplace=True)
-data.drop('decoration', axis=1, inplace=True)
-data.drop('floor_type', axis=1, inplace=True)
-
-data = data.dropna()
-
-label_mean = data.price.mean()
-label_std = data.price.std()
+label_std = data.average_price.std()
 
 for i in data.columns:
-    data[i] = (data[i] - data[i].mean()) / data[i].std()
-
-data['label'] = data['price']
-data.drop('price', axis=1, inplace=True)
+    mean, std = data[i].mean(), data[i].std() + 0.0000000001
+    data[i] = (data[i] - mean) / std
 
 data = shuffle(data)
 
@@ -67,25 +47,21 @@ shape_x = data_train.shape[1] - 1
 
 def next(batch_size=batch_size, data=None):
     data_sample = data.sample(batch_size)
-    return np.array(data_sample.drop('label', axis=1)), np.array(data_sample.label)
+    return np.array(data_sample.drop('average_price', axis=1)), np.array(data_sample.average_price)
 
 
 x = tf.placeholder(shape=[batch_size, shape_x], dtype=tf.float32)
 y_ = tf.placeholder(shape=[batch_size], dtype=tf.float32)
 
-X=tf.reshape(x,[batch_size,1,shape_x,1])
+lay1 = tf.nn.relu(ml.bn(ml.layer_basic(x, 32)))
 
-c1=ml.conv2d(X,conv_filter=[1,shape_x,1,32],padding='VALID',ksize=[1,1,1,1],pool_padding='VALID')
-
-lay1=tf.reshape(c1,[batch_size,32])
-
-lay2 = tf.nn.elu(ml.layer_basic(lay1, 8))
-
-lis = [lay2]
+lis=[lay1]
 for i in range(20):
     lis.append(ml.res(lis[-1]))
 
-y = ml.layer_basic(lis[-1], 1)[:, 0]
+lay2 = tf.nn.relu(ml.bn(ml.layer_basic(lis[-1],4)))
+
+y = ml.layer_basic(lay2,1)[:, 0]
 
 loss = tf.reduce_mean((y - y_) ** 2)
 
