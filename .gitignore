@@ -2,3 +2,5 @@
 *.pyo
 *.tmp*
 .idea
+data_sets/*
+models/*

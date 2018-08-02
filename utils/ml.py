@@ -13,17 +13,17 @@ def bn(x):
 
 
 def bn_with_wb(x):
-    w = tf.Variable(tf.random_uniform([x.shape[1].value], -1.0, 1.0))
-    b = tf.Variable(tf.random_uniform([x.shape[1].value], -1.0, 1.0))
+    w = tf.Variable(tf.random_normal([x.shape[1].value], -1.0, 1.0))
+    b = tf.Variable(tf.random_normal([x.shape[1].value], -1.0, 1.0))
     return bn(x) * w + b
 
 
 def layer_basic(x, size=0, with_b=True):
     if not size:
         size = x.shape[1].value
-    w = tf.Variable(tf.random_uniform([x.shape[1].value, size], -1.0, 1.0))
+    w = tf.Variable(tf.random_normal([x.shape[1].value, size], -1.0, 1.0))
     if with_b:
-        b = tf.Variable(tf.random_uniform([size], -1.0, 1.0))
+        b = tf.Variable(tf.random_normal([size], -1.0, 1.0))
         return tf.matmul(x, w) + b
     else:
         return tf.matmul(x, w)
@@ -43,8 +43,8 @@ def res(x, with_bn=True):
 
 
 def conv2d(input, conv_filter, stride=[1, 1, 1, 1], padding=None):
-    w = tf.Variable(tf.random_uniform(conv_filter, -1.0, 1.0))
-    b = tf.Variable(tf.random_uniform([conv_filter[-1]], -1.0, 1.0))
+    w = tf.Variable(tf.random_normal(conv_filter, -1.0, 1.0))
+    b = tf.Variable(tf.random_normal([conv_filter[-1]], -1.0, 1.0))
     conv2d_out = tf.nn.conv2d(input, w, strides=stride, padding=padding) + b
     return conv2d_out
 

@@ -58,7 +58,5 @@ async_http=Async_http()
 
 
 if __name__=='__main__':
-    import asyncio
-    loop=asyncio.get_event_loop()
-    resp=async_http.get([{'url':'http://baidu.com'},{'url':'http://baidu.com'}])
+    resp=async_http.get([{'url':'http://baidu.com','headers':{}},{'url':'http://baidu.com'}])
     print(resp)

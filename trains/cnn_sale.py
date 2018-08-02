@@ -7,7 +7,7 @@ from sklearn.utils import shuffle
 from utils import fts, ml
 import time
 
-batch_size = 2048
+batch_size = 2**16
 
 data = pd.read_csv(config.ROOT_PATH + '/data_sets/fangdd_sale.csv')
 data.dropna(subset=['trade_date'], inplace=True)
@@ -53,15 +53,11 @@ def next(batch_size=batch_size, data=None):
 x = tf.placeholder(shape=[batch_size, shape_x], dtype=tf.float32)
 y_ = tf.placeholder(shape=[batch_size], dtype=tf.float32)
 
-lay1 = tf.nn.relu(ml.bn(ml.layer_basic(x, 32)))
+lay1 = tf.nn.relu(ml.bn(ml.layer_basic(ml.bn(x), 32)))
 
-lis=[lay1]
-for i in range(20):
-    lis.append(ml.res(lis[-1]))
+lay2 = tf.nn.relu(ml.bn(ml.layer_basic(ml.bn(lay1),8)))
 
-lay2 = tf.nn.relu(ml.bn(ml.layer_basic(lis[-1],4)))
-
-y = ml.layer_basic(lay2,1)[:, 0]
+y = ml.layer_basic(ml.bn(lay2),1)[:, 0]
 
 loss = tf.reduce_mean((y - y_) ** 2)
 

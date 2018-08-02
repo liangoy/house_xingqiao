@@ -7,9 +7,8 @@ ROOT_PATH=os.path.dirname(__file__)
 GAODE_KEY='28b07e24f4fb819ea8516b9715d77ca3'
 
 HOUSE_SALE=pd.read_csv(ROOT_PATH+'/data_sets/fangdd_sale.csv')
-HOUSE_RENT=pd.read_csv(ROOT_PATH+'/data_sets/anjuke_rent_preprocessing.csv')
 
-MODEL_SALE_XGB=ROOT_PATH+'/model/xgb_sale'
+MODEL_SALE_XGB=ROOT_PATH+'/models/xgb_sale'
 
 MONGO_STRING='mongodb://root:xingqiaodb2018@120.76.231.5/admin'
 
@@ -18,6 +17,8 @@ if fts.get_host_ip()=='120.76.231.5':
 else:
     PORT='8090'
 
+#1652.6692162245795
+#0.8854629408607843
 
 if __name__=='__main__':
     print('hello')
