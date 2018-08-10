@@ -11,10 +11,7 @@ data = pd.read_csv(config.ROOT_PATH + '/data_sets/fangdd_sale.csv')
 data = data[sorted(data.columns)]
 data.dropna(subset=['trade_date'], inplace=True)
 
-# for i in ['total_floor', 'area', 'build_date', 'rooms', 'living_rooms']:
-#     data[i] = data[i].fillna(data[i].mean())
-
-#data['all_rooms']=data.rooms+data.living_rooms
+data=data[(10000<data.average_price) & (data.average_price<150000)]
 
 data['trade_date'] = [time.mktime(tuple([int(i) for i in (t + '-01-01').split('-')[:3]]) + (0, 0, 0, 0, 0, 0)) for t in
                       data.trade_date]
