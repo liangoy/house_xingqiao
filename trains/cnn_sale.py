@@ -7,10 +7,12 @@ from sklearn.utils import shuffle
 from utils import fts, ml
 import time
 
-batch_size = 2**16
+batch_size = 1024
 
 data = pd.read_csv(config.ROOT_PATH + '/data_sets/fangdd_sale.csv')
 data.dropna(subset=['trade_date'], inplace=True)
+
+data=data[(10000<data.average_price) & (data.average_price<150000)]
 
 data['trade_date'] = [time.mktime(tuple([int(i) for i in (t + '-01').split('-')[:3]]) + (0, 0, 0, 0, 0, 0)) for t in
                       data.trade_date]
@@ -32,6 +34,7 @@ for i in ['total_floor', 'area', 'build_date', 'rooms', 'living_rooms','around_p
     data[i] = data[i].fillna(data[i].mean())
 
 label_std = data.average_price.std()
+label_mean = data.average_price.mean()
 
 for i in data.columns:
     mean, std = data[i].mean(), data[i].std() + 0.0000000001
@@ -53,15 +56,16 @@ def next(batch_size=batch_size, data=None):
 x = tf.placeholder(shape=[batch_size, shape_x], dtype=tf.float32)
 y_ = tf.placeholder(shape=[batch_size], dtype=tf.float32)
 
-lay1 = tf.nn.relu(ml.bn(ml.layer_basic(ml.bn(x), 32)))
+lay1 = tf.nn.relu(ml.layer_basic(ml.bn(x), 8))
+lay2 = tf.nn.relu(ml.layer_basic(ml.bn(lay1),16))
+lay3 = tf.nn.relu(ml.layer_basic(ml.bn(lay2),32))
+lay4 = tf.nn.relu(ml.layer_basic(ml.bn(lay3),8))
 
-lay2 = tf.nn.relu(ml.bn(ml.layer_basic(ml.bn(lay1),8)))
-
-y = ml.layer_basic(ml.bn(lay2),1)[:, 0]
+y = ml.layer_basic(ml.bn(lay4),1)[:, 0]
 
 loss = tf.reduce_mean((y - y_) ** 2)
 
-optimizer = tf.train.AdamOptimizer(learning_rate=0.01).minimize(loss)
+optimizer = tf.train.AdamOptimizer(learning_rate=0.001).minimize(loss)
 
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
