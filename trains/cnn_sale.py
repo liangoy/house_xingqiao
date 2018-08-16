@@ -59,14 +59,14 @@ y_ = tf.placeholder(shape=[batch_size], dtype=tf.float32)
 lay1 = ml.layer_basic(ml.bn(x), 16)
 
 lis = [lay1]
-for i in range(5):
+for i in range(30):
     lis.append(ml.res(lis[-1]))
 
 y = ml.layer_basic(ml.bn(lis[-1]), 1)[:, 0]
 
 loss = tf.reduce_mean((y - y_) ** 2)
 
-optimizer = tf.train.AdamOptimizer(learning_rate=0.01).minimize(loss)
+optimizer = tf.train.AdamOptimizer(learning_rate=0.2).minimize(loss)
 
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
