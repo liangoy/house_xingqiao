@@ -87,7 +87,7 @@ def rental_price_predicted(**kwargs):
 def selling_price_predicted(**kwargs):
     area = float(kwargs['area'])
     build_date = float(kwargs['build_date'])
-    trade_date = '2018-07'
+    trade_date = kwargs['trade_date']#2018-01-01
     rooms = kwargs['rooms']
     wcs = kwargs['wcs']
     living_rooms = kwargs['living_rooms']
@@ -112,8 +112,8 @@ def selling_price_predicted(**kwargs):
         'latitude': latitude,
         "area": area,
         "build_date": build_date,
-        #"trade_date": time.mktime(tuple([int(i) for i in (trade_date + '-01-01').split('-')[:3]]) + (0, 0, 0, 0, 0, 0)),
-        'trade_date':time.mktime(time.localtime()),
+        "trade_date": time.mktime(tuple([int(i) for i in (trade_date + '-01-01').split('-')[:3]]) + (0, 0, 0, 0, 0, 0)),
+        #'trade_date':time.mktime(time.localtime()),
         "rooms": rooms,
         "living_rooms": living_rooms,
         # "wcs": wcs,

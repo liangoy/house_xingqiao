@@ -44,7 +44,7 @@ params = {
     'booster': 'gbtree',
     'objective': 'reg:linear',
     #'eval_metric':'rmse',
-    'eval_metric':'mae',
+    'eval_metric':'mae',#衡量准确度的方法
     'gamma': 0.1,
     'max_depth': 6,
     'alpha': 1,# l1正则

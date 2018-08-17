@@ -150,6 +150,12 @@ paths:
           pattern: ^\d+$
           in: query
           description: 房屋建造年份
+        - name: trade_date
+          type: string
+          pattern: '^[\d-]*$'
+          in: query
+          description: '交易日期,例如2018-01-01'
+          default: '2018-01-01'
       responses:
         '200':
           description: OK

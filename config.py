@@ -8,7 +8,7 @@ GAODE_KEY='28b07e24f4fb819ea8516b9715d77ca3'
 
 HOUSE_SALE=pd.read_csv(ROOT_PATH+'/data_sets/fangdd_sale.csv')
 
-MODEL_SALE_XGB=ROOT_PATH+'/models/xgb_sale'
+MODEL_SALE_XGB=ROOT_PATH+'/models/sale_xgb'
 
 MONGO_STRING='mongodb://root:xingqiaodb2018@120.76.231.5/admin'
 
