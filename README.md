@@ -61,6 +61,12 @@ tip:在mongo中就用'_id'当成房屋的id的字段名称吧(mongo中的_id就�
 然后就调用接口就好了
 
 # 数据预处理
+
+房多多的数据:![哈哈](https://github.com/liangoy/house_xingqiao/blob/master/pictures/fangdd_info.png)
+
+
+
+
 数据预处理主要为处理极端值,缺失值,枚举型变量,归一化.
 ## 处理极端值
 画出直方图,查看数据的分布,去除明显的离群值
