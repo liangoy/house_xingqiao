@@ -62,7 +62,8 @@ tip:在mongo中就用'_id'当成房屋的id的字段名称吧(mongo中的_id就�
 
 # 数据预处理
 
-房多多的数据:![哈哈](https://github.com/liangoy/house_xingqiao/blob/master/pictures/fangdd_info.png)
+房多多的数据:
+![哈哈](https://github.com/liangoy/house_xingqiao/blob/master/pictures/fangdd_info.png)
 
 
 
