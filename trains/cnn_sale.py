@@ -61,7 +61,7 @@ y_ = tf.placeholder(shape=[batch_size], dtype=tf.float32)
 lay1 = ml.layer_basic(ml.bn(x), 16)
 
 lis = [lay1]
-for i in range(30):
+for i in range(20):
     lis.append(ml.res(lis[-1]))
 
 y = ml.layer_basic(ml.bn(lis[-1]), 1)[:, 0]

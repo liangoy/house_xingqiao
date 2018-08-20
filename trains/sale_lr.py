@@ -50,8 +50,8 @@ y_train_ = np.array(data_train.average_price)
 x_test = np.array(data_test.drop('average_price', axis=1))
 y_test_ = np.array(data_test.average_price)
 
-fn = lambda p, x: np.dot(x, p)
+fn = lambda p, x: np.dot(x, p[:-1])+p[-1]
 error_fn = lambda p, x, y: fn(p, x) - y
-par, success = leastsq(error_fn, [0.0 for i in range(x_train.shape[1])], args=(x_train, y_train_))
+par, success = leastsq(error_fn, [0.0 for i in range(x_train.shape[1]+1)], args=(x_train, y_train_))
 y_test = fn(par, x_test)
 print(np.mean(np.abs(y_test - y_test_)) * label_std, np.corrcoef(y_test, y_test_)[0, 1])
