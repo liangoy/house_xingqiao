@@ -63,9 +63,9 @@ tip:在mongo中就用'_id'当成房屋的id的字段名称吧(mongo中的_id就�
 # 数据预处理
 
 ## 房多多的数据预处理
+原来爬得的数据有38.9w,去除重复重复的数据后还剩下25w(房多多储存了这么多的重复数据...)
 房多多的数据:![fangdd_info](https://github.com/liangoy/house_xingqiao/blob/master/pictures/fangdd_info.png)
 * 'Unnamed: 0'是从csv中读到的索引,是无意义的,故而删除之.
-* '\_id'是房屋的id,暂时没有发现他能提供什么有用的信息,姑且删之.
 * 'address'是房屋的地址,我们结合高徳将他转化成了经纬度.这个属性应该是可以进一步挖掘出信息的,例如可以将房屋分成南山区,罗湖区等等.
 * 'area'是房屋的面积,没有缺失数据,其直方图如图所示![fangdd_area](https://github.com/liangoy/house_xingqiao/blob/master/pictures/fangdd_area.png),我们并没有对其作出处理.
 * 'around_price'是周围的房屋均价,这个是生成的数据.通过经纬度得到以所求房屋为中心,边长为500米内的房屋的均价(若房屋数量小于20,则均价为空值).其直方图如图所示![fangdd_around_price](https://github.com/liangoy/house_xingqiao/blob/master/pictures/fanddd_around_price.png),均价为空值的数据比较少,所以我们直接将其删除.
