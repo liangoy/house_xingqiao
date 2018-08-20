@@ -67,32 +67,32 @@ tip:在mongo中就用'_id'当成房屋的id的字段名称吧(mongo中的_id就�
 * 'Unnamed: 0'是从csv中读到的索引,是无意义的,故而删除之.
 * '\_id'是房屋的id,暂时没有发现他能提供什么有用的信息,姑且删之.
 * 'address'是房屋的地址,我们结合高徳将他转化成了经纬度.这个属性应该是可以进一步挖掘出信息的,例如可以将房屋分成南山区,罗湖区等等.
-* 'area'是房屋的面积,没有缺失数据,其直方图如图所示![fangdd_area][fangdd_area.png],我们并没有对其作出处理.
-* 'around_price'是周围的房屋均价,这个是生成的数据.通过经纬度得到以所求房屋为中心,边长为500米内的房屋的均价(若房屋数量小于20,则均价为空值).其直方图如图所示![fanddd_around_price](fang),均价为空值的数据比较少,所以我们直接将其删除.
-* 'average_price'是房屋每平方米的价格.其直方图如图所示![fangdd_average_price_error](fang),可见每平方米价格中有一个极大的异常值,我们去掉异常值(取值在[0,200000]中的数据)后再画出直方图![fangdd_average_price]()可见在150000后的值已经很稀少了,所以我们将值大于150000的记录舍弃.共丢弃了797个记录.
-* 'bank'是周围银行的数量![fangdd_bank]()无需处理.
-* 'build_date':如图所示![fangdd_build_date](),build_date有一万多个缺失值,我们采用平均值填补这种比较粗糙的处理方法.如果时间充足,先对数据进行聚类,然后用类平均值去填充缺失值应该是一个更好的选择.
-* 'bus_stop'是周围的公交站台的数量,如图所示![fangdd_bus_stop]() 不做处理.
+* 'area'是房屋的面积,没有缺失数据,其直方图如图所示![![fangdd_area](fangdd_area.png)](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_area](fangdd_area.png).png),我们并没有对其作出处理.
+* 'around_price'是周围的房屋均价,这个是生成的数据.通过经纬度得到以所求房屋为中心,边长为500米内的房屋的均价(若房屋数量小于20,则均价为空值).其直方图如图所示![![fanddd_around_price](fang)](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fanddd_around_price](fang).png),均价为空值的数据比较少,所以我们直接将其删除.
+* 'average_price'是房屋每平方米的价格.其直方图如图所示![![fangdd_average_price_error](fang)](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_average_price_error](fang).png),可见每平方米价格中有一个极大的异常值,我们去掉异常值(取值在[0,200000]中的数据)后再画出直方图![![fangdd_average_price]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_average_price]().png)可见在150000后的值已经很稀少了,所以我们将值大于150000的记录舍弃.共丢弃了797个记录.
+* 'bank'是周围银行的数量![![fangdd_bank]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_bank]().png)无需处理.
+* 'build_date':如图所示![![fangdd_build_date]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_build_date]().png),build_date有一万多个缺失值,我们采用平均值填补这种比较粗糙的处理方法.如果时间充足,先对数据进行聚类,然后用类平均值去填充缺失值应该是一个更好的选择.
+* 'bus_stop'是周围的公交站台的数量,如图所示![![fangdd_bus_stop]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_bus_stop]().png) 不做处理.
 * 'community'是房屋所在社区,暂时弃之不用.
-* 'face'是房屋朝向 '未知:0,北:1,东北:2,东:3,东南:4,南:5,西南:6,西:7,西北:8,东西:9,南北:10'  ![fangdd_face]()
+* 'face'是房屋朝向 '未知:0,北:1,东北:2,东:3,东南:4,南:5,西南:6,西:7,西北:8,东西:9,南北:10'  ![![fangdd_face]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_face]().png)
 * 'floor'是楼层以及总楼层.已经根据floor生成floor_type和total_floor.故而弃之.
-* 'floor_type'是楼层类型 '未知:0,地下室:1,低层:2,中层:3,高层:4,顶层:5' 其分布如图所示![fangdd_floor_type]().
-* 'hospital'是房屋周围的医院数量,如图所示![fangdd_hospital]().
-* 'hotel'是房屋周围的宾馆数量,如图所示![fangdd_hotel]()
-* 'latitude'是房屋的维度,如图所示![fangdd_latitude]()
-* 'living_rooms'是房屋的客厅数量,如图所示![fangdd_living_rooms](),其从有五万多缺失值,但没有living_rooms的值为0的记录,所以我们认为应该用0填充缺失值.living_rooms的值大于3的记录的数量只有200多个,所以我们将living_rooms的值大于3的记录删除.
+* 'floor_type'是楼层类型 '未知:0,地下室:1,低层:2,中层:3,高层:4,顶层:5' 其分布如图所示![![fangdd_floor_type]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_floor_type]().png).
+* 'hospital'是房屋周围的医院数量,如图所示![![fangdd_hospital]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_hospital]().png).
+* 'hotel'是房屋周围的宾馆数量,如图所示![![fangdd_hotel]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_hotel]().png)
+* 'latitude'是房屋的维度,如图所示![![fangdd_latitude]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_latitude]().png)
+* 'living_rooms'是房屋的客厅数量,如图所示![![fangdd_living_rooms]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_living_rooms]().png),其从有五万多缺失值,但没有living_rooms的值为0的记录,所以我们认为应该用0填充缺失值.living_rooms的值大于3的记录的数量只有200多个,所以我们将living_rooms的值大于3的记录删除.
 * 'lock'是爬虫中的锁,弃之.
-* 'longitude'是经度,如图所示![fangdd_longitude]()
+* 'longitude'是经度,如图所示![![fangdd_longitude]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_longitude]().png)
 * 'region'是房屋所在区域,弃之
-* 'rooms'的分布如图所示![fangdd_rooms](),rooms有缺失值,但没有零值,所以我们认为其缺失值即为0.
-* 'school'是房屋周围得学校数量,如图所示![fangdd_school]()
-* 'subway_station'是房屋周围得地铁站得数量,如图所示![fangdd_subway_station]()
+* 'rooms'的分布如图所示![![fangdd_rooms]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_rooms]().png),rooms有缺失值,但没有零值,所以我们认为其缺失值即为0.
+* 'school'是房屋周围得学校数量,如图所示![![fangdd_school]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_school]().png)
+* 'subway_station'是房屋周围得地铁站得数量,如图所示![![fangdd_subway_station]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_subway_station]().png)
 * 'times'是爬虫爬取得次数,弃之
 * 'title'是爬取的房多多的u页面的标题,这个属性已经转化成floor,area等属性了,弃之.
 * 'total_floor'是房屋所在的楼层的总层数,存在几万的缺失值,出于时间原因,我们采用总体均值去填充.如果时间充足,对数据进行聚类然后用类均值替代会好一点.
 * 'total_price'可以由area和average_price相乘得到,故而弃之.
-* 'trade_date'是交易时间,有四个缺失值,直接将缺失值删除,然后将其转化成时间戳.其分布如图所示![fangdd_trade_date]()
-* 'type'是房屋的类型,其分布如图所示![fangdd_type](),这个属性太过凌乱,暂时不用.
+* 'trade_date'是交易时间,有四个缺失值,直接将缺失值删除,然后将其转化成时间戳.其分布如图所示![![fangdd_trade_date]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_trade_date]().png)
+* 'type'是房屋的类型,其分布如图所示![![fangdd_type]()](https://github.com/liangoy/house_xingqiao/blob/master/pictures/![fangdd_type]().png),这个属性太过凌乱,暂时不用.
 * 'wcs'是房屋内的厕所数量,缺失值过多,弃之.
 
 ## 处理极端值
