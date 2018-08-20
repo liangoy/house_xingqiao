@@ -7,15 +7,14 @@ from utils import fts, ml
 import time
 
 data = pd.read_csv(config.ROOT_PATH + '/data_sets/fangdd_sale.csv')
-data.dropna(subset=['trade_date','around_price'], inplace=True)
+data.dropna(subset=['trade_date', 'around_price'], inplace=True)
 
 data = data[(10000 < data.average_price) & (data.average_price < 150000)]
-data.build_date.fillna(data.build_date.mean(),inplace=True)
-data.living_rooms.fillna(0,inplace=True)
-data=data[data.living_rooms<=3]
-data.rooms.fillna(0,inplace=True)
-data.total_floor.fillna(data.total_floor.mean(),inplace=True)
-
+data.build_date.fillna(data.build_date.mean(), inplace=True)
+data.living_rooms.fillna(0, inplace=True)
+data = data[data.living_rooms <= 3]
+data.rooms.fillna(0, inplace=True)
+data.total_floor.fillna(data.total_floor.mean(), inplace=True)
 
 data['trade_date'] = [time.mktime(tuple([int(i) for i in (t + '-01').split('-')[:3]]) + (0, 0, 0, 0, 0, 0)) for t in
                       data.trade_date]
@@ -29,8 +28,8 @@ for i in ['face', 'floor_type']:
         data[str(cnt)] = df_temp[j]
         cnt += 1
 
-for i in ['_id', 'address', 'Unnamed: 0', 'community', 'floor', 'region', 'times', 'title', 'type', 'lock',
-          'total_price', 'face', 'floor_type','wcs']:
+for i in ['address', 'Unnamed: 0', 'community', 'floor', 'region', 'times', 'title', 'type', 'lock',
+          'total_price', 'face', 'floor_type', 'wcs','around_price']:
     data.drop(i, axis=1, inplace=True)
 
 label_std = data.average_price.std()
@@ -55,4 +54,4 @@ fn = lambda p, x: np.dot(x, p)
 error_fn = lambda p, x, y: fn(p, x) - y
 par, success = leastsq(error_fn, [0.0 for i in range(x_train.shape[1])], args=(x_train, y_train_))
 y_test = fn(par, x_test)
-print(np.mean(np.abs(y_test - y_test_)) * label_std, np.corrcoef(y_test, y_test_)[0,1])
+print(np.mean(np.abs(y_test - y_test_)) * label_std, np.corrcoef(y_test, y_test_)[0, 1])
