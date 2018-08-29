@@ -29,17 +29,22 @@ def layer_basic(x, size=0, with_b=True):
         return tf.matmul(x, w)
 
 
-def res(x, with_bn=True):
+def res(x,size=0,with_bn=True):
     if not with_bn:
         res_bn = lambda lay: lay
     else:
         res_bn = bn
-    lay1 = tf.nn.relu(layer_basic(res_bn(x)))
+    lay1 = tf.nn.relu(layer_basic(res_bn(x),size=size))
     lay2 = tf.nn.relu(layer_basic(res_bn(lay1)))
     lay3 = tf.nn.relu(layer_basic(res_bn(lay2)))
     lay4 = tf.nn.relu(layer_basic(res_bn(lay3)))
     lay5 = tf.nn.relu(layer_basic(res_bn(lay4)))
-    return lay5+x
+
+    if size:
+        X=layer_basic(x,size)
+    else:
+        X=x
+    return lay5+X
 
 
 def conv2d(input, conv_filter, stride=[1, 1, 1, 1], padding=None):
